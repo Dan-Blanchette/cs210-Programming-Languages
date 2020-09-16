@@ -10,21 +10,24 @@
 
 #include "lex.h"
 
-extern int errno;
-
-int main(int argc, char **argv)
+int main()
 {
+    char fName[255];
+    scanf("%s",fName);
 
-    int fd = open("hello_world.ccx", O_RDONLY | O_CREAT);
-
-    printf("fd = %d\n", fd);
-
-    if (fd == -1)
+    if((inFile = fopen("fName","r")) == NULL)
     {
-        printf("Error %d\n", errno);
-
-        perror("Program");
+        printf("Error - cannot open file \n");
     }
-
+    else 
+    {
+        getChar();
+        do
+        {
+            lex();
+        }   while (nextToken != EOF);
+    }
+    fclose(inFile);
     return 0;
 }
+
