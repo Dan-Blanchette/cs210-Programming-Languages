@@ -6,7 +6,7 @@ int main()
     /* Character variable to read the content of file */
     char c, fileName[100];
     
-    printf("Please enter a file name:");
+    printf("\nPlease enter a file name:");
     scanf("%s", fileName);
     // get command line input for file name.
 
@@ -22,10 +22,25 @@ int main()
             printf("\n");
             break;
         }
+    
+        switch(c)
+        {
+            case '/':
+            if( c == '/' + '*' && c == '*' + '/')
+            break;
 
-        else
-            printf("%c", c);
-     }
+            case '(':
+            printf("%c\n", c);
+            break;
+
+            default:
+        }
+
+
+
+
+
+     
      fclose(fp1);
      return 0;
 }
