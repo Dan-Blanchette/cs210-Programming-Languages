@@ -8,39 +8,23 @@
  * comment lines from the program.
  */
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
+#include "lex.h"
 
-#define BUFFER_SIZE 1024
+extern int errno;
 
 int main(int argc, char **argv)
 {
-    FILE *fd;
-    char fc[BUFFER_SIZE];
-    int totalRead = 0;
 
-    fd = fopen("hello_world.ccx", "r");
+    int fd = open("hello_world.ccx", O_RDONLY | O_CREAT);
 
-    if(fopen == NULL)
+    printf("fd = %d\n", fd);
+
+    if (fd == -1)
     {
-        printf("Unable to open file.\n");
-        printf("Please ensure file exits\n");
-        exit(EXIT_FAILURE);
+        printf("Error %d\n", errno);
+
+        perror("Program");
     }
-
-    printf("File opened, Reading file contents\n");
-
-    while ( fgets(fc, BUFFER_SIZE, fd) != NULL )
-    {
-        totalRead = strlen(fc);
-
-        fc[totalRead - 1] =  fc[totalRead - 1] = '\n' ? '\0' : fc[totalRead - 1];
-
-        printf("%s\n", fc);
-    }
-
-    fclose(fd);
 
     return 0;
 }
