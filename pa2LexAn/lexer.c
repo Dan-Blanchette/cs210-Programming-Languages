@@ -1,45 +1,61 @@
 #include "lexer.h"
 
 // Returns 'true' if the character is a DELIMITER. 
-bool isDelimiter(char ch) 
+bool isDelim(char ch) 
 { 
 	if (ch == ' ' || ch == '+' || ch == '-' || ch == '*' || 
 		ch == '/' || ch == ',' || ch == ';' || ch == '>' || 
 		ch == '<' || ch == '=' || ch == '(' || ch == ')' || 
 		ch == '[' || ch == ']' || ch == '{' || ch == '}' ||
-		ch == '\n') 
+		ch == '\n'|| ch == ':' || ch == '\t'|| ch == '\r'||
+		ch == '"') 
 		return (true); 
 	return (false); 
 } 
 
+// Returns true if ch and ch +1 is a /* && */
+// bool isComm(char *ch)
+// {
+
+// }
+
+bool isStr(char ch)
+{
+	if( ch == '"')
+		return true;
+	return false;
+} 
+
 // Returns 'true' if the character is an OPERATOR. 
-bool isOperator(char ch) 
+bool isOp(char ch) 
 { 
 	if (ch == '+' || ch == '-' || ch == '*' || 
 		ch == '/' || ch == '>' || ch == '<' || 
-		ch == '=') 
+		ch == '=' || ch == '(' || ch == ')' ||
+		ch == ':' || ch == ';' || ch == ',' ||
+		ch == '[' || ch == ']') 
 		return (true); 
 	return (false); 
 } 
 
 // Returns 'true' if the string is a VALID IDENTIFIER. 
-bool validIdentifier(char* str) 
+bool vIdent(char *str) 
 { 
 	if (str[0] == '0' || str[0] == '1' || str[0] == '2' || 
 		str[0] == '3' || str[0] == '4' || str[0] == '5' || 
 		str[0] == '6' || str[0] == '7' || str[0] == '8' || 
-		str[0] == '9' || isDelimiter(str[0]) == true) 
+		str[0] == '9' || isDelim(str[0]) == true) 
 		return (false); 
 	return (true); 
 } 
 
 // Returns 'true' if the string is a KEYWORD. 
-bool isKeyword(char* str) 
+bool isKW(char *str) 
 { 
 	if (!strcmp(str, "if") || !strcmp(str, "else") || 
 		!strcmp(str, "while") || !strcmp(str, "do") || 
-		!strcmp(str, "break") || 
-		!strcmp(str, "continue") || !strcmp(str, "int") 
+		!strcmp(str, "break") || !strcmp(str, "continue") 
+		|| !strcmp(str, "int") || !strcmp(str, "in") 
 		|| !strcmp(str, "double") || !strcmp(str, "float") 
 		|| !strcmp(str, "return") || !strcmp(str, "char") 
 		|| !strcmp(str, "case") || !strcmp(str, "char") 
@@ -47,13 +63,30 @@ bool isKeyword(char* str)
 		|| !strcmp(str, "short") || !strcmp(str, "typedef") 
 		|| !strcmp(str, "switch") || !strcmp(str, "unsigned") 
 		|| !strcmp(str, "void") || !strcmp(str, "static") 
-		|| !strcmp(str, "struct") || !strcmp(str, "goto")) 
+		|| !strcmp(str, "struct") || !strcmp(str, "goto")
+		|| !strcasecmp(str, "integer") || !strcasecmp(str, "interface")
+		|| !strcasecmp(str, "accessor") || !strcasecmp(str, "and")
+		|| !strcasecmp(str, "array") || !strcasecmp(str, "begin")
+		|| !strcasecmp(str, "bool") || !strcasecmp(str, "character") 
+		|| !strcasecmp(str, "constant") || !strcasecmp(str, "elsif")
+		|| !strcasecmp(str, "end") || !strcasecmp(str, "exit")
+		|| !strcasecmp(str, "function") || !strcasecmp(str, "is")
+		|| !strcasecmp(str, "module") || !strcasecmp(str, "loop")
+		|| !strcasecmp(str, "mutator") || !strcasecmp(str, "natural")
+		|| !strcasecmp(str, "null")|| !strcasecmp(str, "of")
+		|| !strcasecmp(str, "or")|| !strcasecmp(str, "others")
+		|| !strcasecmp(str, "out") || !strcasecmp(str, "positive")
+		|| !strcasecmp(str, "procedure") || !strcasecmp(str, "range")
+		|| !strcasecmp(str, "return") || !strcasecmp(str, "struct")
+		|| !strcasecmp(str, "subtype") || !strcasecmp(str, "then")
+		|| !strcasecmp(str, "type") || !strcasecmp(str, "when")
+		|| !strcasecmp(str, "while")) 
 		return (true); 
 	return (false); 
 } 
 
 // Returns 'true' if the string is an INTEGER. 
-bool isInteger(char* str) 
+bool isInt(char* str) 
 { 
 	int i, len = strlen(str); 
 
@@ -70,7 +103,7 @@ bool isInteger(char* str)
 } 
 
 // Returns 'true' if the string is a REAL NUMBER. 
-bool isRealNumber(char* str) 
+bool isRN(char* str) 
 { 
 	int i, len = strlen(str); 
 	bool hasDecimal = false; 
@@ -91,7 +124,7 @@ bool isRealNumber(char* str)
 } 
 
 // Extracts the SUBSTRING. 
-char* subString(char* str, int left, int right) 
+char* sStr(char* str, int left, int right) 
 { 
 	int i; 
 	char* subStr = (char*)malloc( sizeof(char) * (right - left + 2)); 
@@ -103,45 +136,51 @@ char* subString(char* str, int left, int right)
 } 
 
 // Parsing the input STRING. 
-void parse(char *str) 
+void lex(char *str) 
 { 
-	int left = 0, right = 0; 
+	int l = 0, r = 0; 
 	int len = strlen(str); 
 
-	while (right <= len && left <= right) 
+	while (r <= len && l <= r) 
     { 
-		if (isDelimiter(str[right]) == false) 
-			right++; 
+		if (isDelim(str[r]) == false) 
+			r++; 
 
-		if (isDelimiter(str[right]) == true && left == right) 
+		if (isDelim(str[r]) == true && l == r) 
         { 
-			if (isOperator(str[right]) == true) 
-				printf("'%c' IS AN OPERATOR\n", str[right]); 
+			if (isOp(str[r]) == true) 
+				printf("%c (operator)\n", str[r]); 
 
-			right++; 
-			left = right; 
+			else if (isStr(str[r]) == true)
+				printf("%c (string)\n", str[r]);
+
+			r++; 
+			l = r; 
 		}
-        else if (isDelimiter(str[right]) == true && left != right 
-				|| (right == len && left != right)) { 
-			char* subStr = subString(str, left, right - 1); 
+        else if (isDelim(str[r]) == true && l != r 
+				|| (r == len && l != r)) { 
+			char* subStr = sStr(str, l, r - 1); 
+			
+			if (isKW(subStr) == true) 
+				printf("%s (keyword)\n", subStr); 
+			
+			// else if (isComm(subStr) == true)
+			// 	printf("%s (comment)\n", subStr);
 
-			if (isKeyword(subStr) == true) 
-				printf("'%s' IS A KEYWORD\n", subStr); 
+			else if (isInt(subStr) == true) 
+				printf("%s (integer)\n", subStr); 
 
-			else if (isInteger(subStr) == true) 
-				printf("'%s' IS AN INTEGER\n", subStr); 
+			else if (isRN(subStr) == true) 
+				printf("%s (realNum)\n", subStr); 
 
-			else if (isRealNumber(subStr) == true) 
-				printf("'%s' IS A REAL NUMBER\n", subStr); 
+			else if (vIdent(subStr) == true
+					&& isDelim(str[r - 1]) == false) 
+				printf("%s  (identifier)\n", subStr); 
 
-			else if (validIdentifier(subStr) == true
-					&& isDelimiter(str[right - 1]) == false) 
-				printf("'%s' IS A VALID IDENTIFIER\n", subStr); 
-
-			else if (validIdentifier(subStr) == false
-					&& isDelimiter(str[right - 1]) == false) 
-				printf("'%s' IS NOT A VALID IDENTIFIER\n", subStr); 
-			left = right; 
+			else if (vIdent(subStr) == false
+					&& isDelim(str[r - 1]) == false) 
+				printf("%s (unknown)\n", subStr); 
+			l = r; 
 		} 
 	} 
 	return; 

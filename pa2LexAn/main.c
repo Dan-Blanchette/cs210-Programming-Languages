@@ -26,15 +26,11 @@ int main(int argc, char **argv)
     buff = malloc((size +1) * sizeof(*buff));
     fread(buff, size, 1, fp);
     buff[size] = '\0';
-    //printf("%s", buff);
-
-    
-	// maximum legth of string is 100 here 
-	// char str[100] = "int a = b + 1c; "; 
+ 
 
     fclose(fp);
 
-    parse(buff); // calling the parse function 
+    lex(buff); // calling the parse function 
 	return (0); 
 } 
 

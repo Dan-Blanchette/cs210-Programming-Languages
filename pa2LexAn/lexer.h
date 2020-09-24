@@ -5,14 +5,17 @@
 #include <string.h> 
 #include <stdlib.h> 
 
-bool isDelimiter(char ch);
-bool isOperator(char ch);
-bool validIdentifier(char* str);
-bool isKeyword(char* str);
-bool isInteger(char* str);
-bool isRealNumber(char* str);
-char* subString(char* str, int left, int right);
-void parse(char *str);
+bool isDelim(char ch);
+// bool isComm(char *ch); Needs to be implmented
+// bool isStr(char ch);   Needs to be implmented
+bool isOp(char ch);
+bool isOp2(char *str);
+bool vIdent(char *str);
+bool isKW(char* str);
+bool isInt(char *str);
+bool isRN(char *str);
+char* sStr(char *str, int left, int right);
+void lex(char *str);
 
 
 #endif
