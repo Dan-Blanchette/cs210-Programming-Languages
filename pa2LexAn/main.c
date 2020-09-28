@@ -1,3 +1,9 @@
+// Dan Blanchette
+// CS210 assignment #2
+// Dr. Rinker
+// Start Date: 9/23/2020
+// Due: 10/1/2020
+
 #include "lexer.h"
 
 

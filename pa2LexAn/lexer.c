@@ -12,19 +12,25 @@ bool isDelim(char ch)
 		return (true); 
 	return (false); 
 } 
-
-// Returns true if ch and ch +1 is a /* && */
-// bool isComm(char *ch)
+// Returns 'true' if the character is a string flag
+// bool isStr(char *str)
 // {
+// 	int len = strlen(str), i;
 
+// 	for (i; i < len; ++i)
+// 	{
+// 		// if str[i] == " and the next char is not "
+// 		if (str[i] == '"' && str[i+1] != '"')
+// 		{
+// 			if(str[i] != '"' && str[i+1] =='"')
+// 			{
+// 				putchar(*str);
+// 				return (true);
+// 			}
+// 		}
+// 	}
+// 	return (false);
 // }
-
-bool isStr(char ch)
-{
-	if( ch == '"')
-		return true;
-	return false;
-} 
 
 // Returns 'true' if the character is an OPERATOR. 
 bool isOp(char ch) 
@@ -35,8 +41,9 @@ bool isOp(char ch)
 		ch == ':' || ch == ';' || ch == ',' ||
 		ch == '[' || ch == ']') 
 		return (true); 
-	return (false); 
+return (false); 
 } 
+
 
 // Returns 'true' if the string is a VALID IDENTIFIER. 
 bool vIdent(char *str) 
@@ -86,17 +93,20 @@ bool isKW(char *str)
 } 
 
 // Returns 'true' if the string is an INTEGER. 
-bool isInt(char* str) 
+bool isNL(char* str) 
 { 
 	int i, len = strlen(str); 
 
 	if (len == 0) 
 		return (false); 
-	for (i = 0; i < len; i++) { 
+	for (i = 0; i < len; i++) 
+	{ 
 		if (str[i] != '0' && str[i] != '1' && str[i] != '2'
 			&& str[i] != '3' && str[i] != '4' && str[i] != '5'
 			&& str[i] != '6' && str[i] != '7' && str[i] != '8'
-			&& str[i] != '9' || (str[i] == '-' && i > 0)) 
+			&& str[i] != '9' && str[i] != 'A' && str[i] != 'B' 
+			&& str[i] != 'C' && str[i] != 'D' && str[i] != 'E'
+			&& str[i] != 'F' || (str[i] == '-' && i > 0))
 			return (false); 
 	} 
 	return (true); 
@@ -110,7 +120,8 @@ bool isRN(char* str)
 
 	if (len == 0) 
 		return (false); 
-	for (i = 0; i < len; i++) { 
+	for (i = 0; i < len; i++) 
+	{ 
 		if (str[i] != '0' && str[i] != '1' && str[i] != '2'
 			&& str[i] != '3' && str[i] != '4' && str[i] != '5'
 			&& str[i] != '6' && str[i] != '7' && str[i] != '8'
@@ -138,6 +149,7 @@ char* sStr(char* str, int left, int right)
 // Parsing the input STRING. 
 void lex(char *str) 
 { 
+	char *str2;
 	int l = 0, r = 0; 
 	int len = strlen(str); 
 
@@ -145,41 +157,42 @@ void lex(char *str)
     { 
 		if (isDelim(str[r]) == false) 
 			r++; 
-
+		// if a delimiter if found, check it against the operator table
+		// and print the operator character if found.
 		if (isDelim(str[r]) == true && l == r) 
         { 
-			if (isOp(str[r]) == true) 
-				printf("%c (operator)\n", str[r]); 
-
-			else if (isStr(str[r]) == true)
-				printf("%c (string)\n", str[r]);
+			if (isOp(str[r]) == true)
+			{
+				printf("%c (operator)\n", str[r]);
+			}
 
 			r++; 
 			l = r; 
 		}
         else if (isDelim(str[r]) == true && l != r 
-				|| (r == len && l != r)) { 
-			char* subStr = sStr(str, l, r - 1); 
+				|| (r == len && l != r)) 
+		{ 
+				char *subStr = sStr(str, l, r - 1);
+
+				if (isKW(subStr) == true) 
+					printf("%s (keyword)\n", subStr); 
+				
+				// else if (isStr(subStr) == true)
+				//  	printf("%s (string)", subStr);
 			
-			if (isKW(subStr) == true) 
-				printf("%s (keyword)\n", subStr); 
-			
-			// else if (isComm(subStr) == true)
-			// 	printf("%s (comment)\n", subStr);
+				else if (isNL(subStr) == true) 
+					printf("%s (numeric literal)\n", subStr); 
 
-			else if (isInt(subStr) == true) 
-				printf("%s (integer)\n", subStr); 
+				else if (isRN(subStr) == true) 
+					printf("%s (realNum)\n", subStr); 
 
-			else if (isRN(subStr) == true) 
-				printf("%s (realNum)\n", subStr); 
+				else if (vIdent(subStr) == true
+						&& isDelim(str[r - 1]) == false) 
+					printf("%s (identifier)\n", subStr); 
 
-			else if (vIdent(subStr) == true
-					&& isDelim(str[r - 1]) == false) 
-				printf("%s  (identifier)\n", subStr); 
-
-			else if (vIdent(subStr) == false
-					&& isDelim(str[r - 1]) == false) 
-				printf("%s (unknown)\n", subStr); 
+				else if (vIdent(subStr) == false
+						&& isDelim(str[r - 1]) == false) 
+					printf("%s (unknown)\n", subStr); 
 			l = r; 
 		} 
 	} 
