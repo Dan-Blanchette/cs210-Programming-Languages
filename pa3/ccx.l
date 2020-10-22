@@ -1,6 +1,11 @@
-
 %{
 /*
+ * Dan Blanchette
+ * Dr. Rinker
+ * CS 210 Programming Languages
+ * Programming Assignment #3
+ * 10/10/2020
+ *
  * This is part of the definitions section.  It starts with %{ and ends with %}.
  * Any text placed in this area will be copied verbatim into the lex.yy.c
  * output file that lex generates, and will be placed near the top of that file.
@@ -10,6 +15,8 @@
  * scanner does not need any extra header files, so we don't #include any here.
  *
  * Please see http://flex.sourceforge.net for further details.
+ *
+ * This file will establish rules to analyze a CCX format file into its respective lexemes
  */
 %}
     /*
@@ -47,13 +54,14 @@ STRING   \"(\\.|[^"\\])*\"
      *
      * Please see http://flex.sourceforge.net for further details.
      */
-    /*{COMMS}   { printf("%s (comment)\n", yytext); }
-    {COMME}   { printf("%s (comment)\n", yytext); } */
+     /*Rules for numeric literals */
 {NUMLIT} { printf("%s (num-lit)\n", yytext); }
+    /*Rules for strings */
 {STRING} { printf("%s (string)\n", yytext); }
+    /*Rules for comments*/
 {COMMENT} {printf("%s (comment)\n", yytext); }
 
-
+    /*Rules for keywords */
 acessor |
 and |
 array |
@@ -94,7 +102,7 @@ while {
     /* The action to be taken when we encounter a keyword */
     printf("%s (keyword)\n", yytext );
     }
-     
+    /*Rules for identifiers*/     
 {ID}        printf("%s (identifier)\n", yytext);
      
 "+"|";"|"-"|"*"|"/"|"."|"<"|">"|"("|")"|":"|">>"|":="|"<<"|"<>"|"!="|"<="|">="|"**"|"=>"|"["|"]"|"="|","  {  
