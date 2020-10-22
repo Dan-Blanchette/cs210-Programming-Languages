@@ -26,8 +26,8 @@ HEXD     [A-Fa-f]
 ID       [a-z][_a-z0-9]*
 NUMLIT   [0-9][0-9a-fA-F_.#]*
 COMMS    ("/*")
-COMME    ("*/")
-STRING   ["][%0-9a-zA-YZ-\],: \\"]+
+COMMENT  [/][*][^*]*[*]+([^*/][^*]*[*]+)*[/]
+STRING   \"(\\.|[^"\\])*\" 
 %%
     /*
      * This is the rules section.  It starts with the %% above and continues
@@ -51,6 +51,7 @@ STRING   ["][%0-9a-zA-YZ-\],: \\"]+
     {COMME}   { printf("%s (comment)\n", yytext); } */
 {NUMLIT} { printf("%s (num-lit)\n", yytext); }
 {STRING} { printf("%s (string)\n", yytext); }
+{COMMENT} {printf("%s (comment)\n", yytext); }
 
 
 acessor |
@@ -96,7 +97,7 @@ while {
      
 {ID}        printf("%s (identifier)\n", yytext);
      
-"+"|";"|"-"|"*"|"/"|"."|"<"|">"|"("|")"|":"|">>"|":="|"<<"|"<>"|"!="|"<="|">="|"**"|"=>"|"["|"]"|"="  {  
+"+"|";"|"-"|"*"|"/"|"."|"<"|">"|"("|")"|":"|">>"|":="|"<<"|"<>"|"!="|"<="|">="|"**"|"=>"|"["|"]"|"="|","  {  
         printf("%s (operator)\n", yytext); 
         }
      
