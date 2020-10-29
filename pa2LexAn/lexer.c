@@ -7,30 +7,10 @@ bool isDelim(char ch)
 		ch == '/' || ch == ',' || ch == ';' || ch == '>' || 
 		ch == '<' || ch == '=' || ch == '(' || ch == ')' || 
 		ch == '[' || ch == ']' || ch == '{' || ch == '}' ||
-		ch == '\n'|| ch == ':' || ch == '\t'|| ch == '\r'||
-		ch == '"') 
+		ch == '\n'|| ch == ':' || ch == '\t'|| ch == '\r')
 		return (true); 
 	return (false); 
 } 
-// Returns 'true' if the character is a string flag
-// bool isStr(char *str)
-// {
-// 	int len = strlen(str), i;
-
-// 	for (i; i < len; ++i)
-// 	{
-// 		// if str[i] == " and the next char is not "
-// 		if (str[i] == '"' && str[i+1] != '"')
-// 		{
-// 			if(str[i] != '"' && str[i+1] =='"')
-// 			{
-// 				putchar(*str);
-// 				return (true);
-// 			}
-// 		}
-// 	}
-// 	return (false);
-// }
 
 // Returns 'true' if the character is an OPERATOR. 
 bool isOp(char ch) 
@@ -41,8 +21,20 @@ bool isOp(char ch)
 		ch == ':' || ch == ';' || ch == ',' ||
 		ch == '[' || ch == ']') 
 		return (true); 
+		if (ch+1 == '*')
+		{
+			return (false);
+		}
+
 return (false); 
 } 
+
+bool isOp2(char *str)
+{
+	if (!strcmp(str, ":="))
+		return (true);
+	return (false);
+}
 
 
 // Returns 'true' if the string is a VALID IDENTIFIER. 
@@ -149,37 +141,32 @@ char* sStr(char* str, int left, int right)
 // Parsing the input STRING. 
 void lex(char *str) 
 { 
-	char *str2;
-	int l = 0, r = 0; 
+	int left = 0, right = 0; 
 	int len = strlen(str); 
 
-	while (r <= len && l <= r) 
+	while (right <= len && left <= right) 
     { 
-		if (isDelim(str[r]) == false) 
-			r++; 
-		// if a delimiter if found, check it against the operator table
-		// and print the operator character if found.
-		if (isDelim(str[r]) == true && l == r) 
+		if (isDelim(str[right]) == false) 
+			right++;
+		/* if a delimiter if found, check it against the operator table
+		and print the operator character if found.*/
+		if (isDelim(str[right]) == true && left == right) 
         { 
-			if (isOp(str[r]) == true)
+			if (isOp(str[right]) == true)
 			{
-				printf("%c (operator)\n", str[r]);
+				printf("%c (operator)\n", str[right]);
 			}
-
-			r++; 
-			l = r; 
+			right++; 
+			left = right; 
 		}
-        else if (isDelim(str[r]) == true && l != r 
-				|| (r == len && l != r)) 
+        else if (isDelim(str[right]) == true && left != right 
+				|| (right == len && left != right)) 
 		{ 
-				char *subStr = sStr(str, l, r - 1);
+				char *subStr = sStr(str, left, right - 1);
 
 				if (isKW(subStr) == true) 
 					printf("%s (keyword)\n", subStr); 
-				
-				// else if (isStr(subStr) == true)
-				//  	printf("%s (string)", subStr);
-			
+							
 				else if (isNL(subStr) == true) 
 					printf("%s (numeric literal)\n", subStr); 
 
@@ -187,13 +174,13 @@ void lex(char *str)
 					printf("%s (realNum)\n", subStr); 
 
 				else if (vIdent(subStr) == true
-						&& isDelim(str[r - 1]) == false) 
+						&& isDelim(str[right - 1]) == false) 
 					printf("%s (identifier)\n", subStr); 
 
 				else if (vIdent(subStr) == false
-						&& isDelim(str[r - 1]) == false) 
+						&& isDelim(str[right - 1]) == false) 
 					printf("%s (unknown)\n", subStr); 
-			l = r; 
+			left = right; 
 		} 
 	} 
 	return; 

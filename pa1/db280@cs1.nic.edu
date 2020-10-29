@@ -25,7 +25,7 @@ int main(int argc, char **argv)
 	
 	if(fp == NULL){
 		printf("error while opening the file\n");
-		exit(1);
+		exit(0);
 	}
 
 

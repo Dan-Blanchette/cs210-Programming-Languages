@@ -7,6 +7,7 @@
 #include "lexer.h"
 
 
+
 // DRIVER FUNCTION 
 int main(int argc, char **argv) 
 { 
@@ -14,6 +15,10 @@ int main(int argc, char **argv)
     char *buff = NULL;
     char ch;
     size_t size = 0;
+    int c, i, 
+    prev = 0,
+    insingle = 0, 
+    inmulti = 0;
 
 
     fp = fopen(argv[1],"r");
@@ -29,14 +34,14 @@ int main(int argc, char **argv)
 
     rewind(fp);
 
-    buff = malloc((size +1) * sizeof(*buff));
+    buff = malloc((size + 1 ) * sizeof(*buff));
     fread(buff, size, 1, fp);
-    buff[size] = '\0';
- 
+    // append NULL to the array
+    buff[size] = '\0'; 
 
+      
     fclose(fp);
 
     lex(buff); // calling the parse function 
 	return (0); 
 } 
-

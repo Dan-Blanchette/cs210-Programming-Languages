@@ -6,15 +6,15 @@
 #include <string.h> 
 #include <stdlib.h> 
 
-/* ACKNOWLEDGEMENTS / RESOURCES used to create this project */
+/* ACKNOWLEDGEMENTS / RESOURCES used in the creation of this project */
 // Geeksforgeeks.org
 /* https://www.geeksforgeeks.org/c-program-detect-tokens-c-program/ */
 
 
 bool isDelim(char ch);
-// bool isStr(char *str);   // Needs implimentation
-// bool isComm(char *str); // Needs implimentation 
 bool isOp(char ch);
+// bool isComm(char *str); // Needs implimentation 
+// bool isStr(char *str);   // Needs implimentation
 bool vIdent(char *str);
 bool isKW(char* str);
 bool isInt(char *str);
