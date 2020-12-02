@@ -5,7 +5,7 @@ lex = lex
 lexgens = lex.yy.c
 yacc = yacc
 yaccopts = -d
-yaccgens = y.tab.c y.tab.h
+yaccgens = y.tab.c y.tab.h 
 prj = calc
 
 $(prj): $(lexgens) $(yaccgens)

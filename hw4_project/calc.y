@@ -1,5 +1,6 @@
 %{
 #include <stdio.h>
+#include <math.h>
 #include <string.h>
 #include <stdlib.h>
 #include "sym.h"
@@ -10,11 +11,12 @@ void yyerror(const char *s);
 %}
 %union {
     double dval;
-    struct sym * symptr;
+    struct sym *symptr;
 }
 
 %token <symptr> NAME
 %token <dval> NUMBER
+%token PI PHI
 %left '-' '+'
 %left '*' '/'
 %nonassoc UMINUS
@@ -27,7 +29,18 @@ statement_list
     ;
 
 statement
-    : NAME '=' expression { $1->value = $3; }
+    : NAME '=' expression 
+    { 
+        char *constSym = $1->name;
+        if (strcmp(constSym, "PI") != 0 && strcmp(constSym, "PHI") != 0)
+        {        
+            $1->value = $3; 
+        }
+        else
+        {
+            yyerror("assign to const");
+        }
+    }
     | expression { printf("= %g\n", $1); }
     ;
 
@@ -35,7 +48,11 @@ expression
     : expression '+' expression { $$ = $1 + $3; }
     | expression '-' expression { $$ = $1 - $3; }
     | expression '*' expression { $$ = $1 * $3; }
-    | expression '/' expression { $$ = $1 / $3; }
+    | expression '/' expression { if ($3 == 0.0)
+                                        yyerror("divide by zero");
+                                  else 
+                                        $$ = $1 / $3; 
+                                }
     | '-' expression %prec UMINUS { $$ = -$2; }
     | '(' expression ')' { $$ = $2; }
     | NUMBER
@@ -44,16 +61,15 @@ expression
 
 %%
 
-struct sym * sym_lookup(char * s)
+struct sym * sym_lookup(char *s)
 {
     char * p;
-    struct sym * sp;
+    struct sym *sp;
 
     for (sp=sym_tbl; sp < &sym_tbl[NSYMS]; sp++)
     {
         if (sp->name && strcmp(sp->name, s) == 0)
             return sp;
-
         if (sp->name)
             continue;
 

@@ -1,5 +1,4 @@
 %{
-/*#include <math.h> */ 
 #include "y.tab.h"
 #include "sym.h"
 %}
