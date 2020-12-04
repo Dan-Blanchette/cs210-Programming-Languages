@@ -1,4 +1,4 @@
-Acknowledgement of Resources used for this assignment
+Acknowledgement of resources/references used in the development of this assignment
 Lex and Yacc -by Doug Brown, John R. Levine, and Tony Mason
 
 Stackoverflow.com

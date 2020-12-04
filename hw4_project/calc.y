@@ -22,7 +22,6 @@ void yyerror(const char *s);
 %token <dval> NUMBER
 %left '-' '+'
 %left '*' '/'
-%left '(' ')'
 %nonassoc UMINUS
 
 %type <dval> expression
@@ -33,15 +32,13 @@ statement_list
     ;
 
 statement
-    : NAME '=' expression 
+    :
+    | NAME '=' expression 
     { 
         char *constSym = $1->name;
-        if (strcmp(constSym, "PI") != 0 && strcmp(constSym, "PHI") != 0)
-        {        
+    if (strcmp(constSym, "PI") != 0 && strcmp(constSym, "PHI") != 0){        
             $1->value = $3; 
-        }
-        else
-        {
+        } else {
             yyerror("assign to const");
         }
     }
@@ -52,11 +49,13 @@ expression
     : expression '+' expression { $$ = $1 + $3; }
     | expression '-' expression { $$ = $1 - $3; }
     | expression '*' expression { $$ = $1 * $3; }
-    | expression '/' expression { if ($3 == 0.0)
-                                        yyerror("divide by zero");
-                                  else 
-                                        $$ = $1 / $3; 
-                                }
+    | expression '/' expression { 
+        if ($3 == 0) {
+            yyerror("divide by zero");
+        } else {
+            $$ = $1 / $3;
+        }
+    }
     | '-' expression %prec UMINUS { $$ = -$2; }
     | '(' expression ')' { $$ = $2; }
     | NUMBER
@@ -67,27 +66,30 @@ expression
 
 struct sym * sym_lookup(char *s)
 {
-    if (s_ptr == NULL)
+    if (head == NULL)
     {
-        s_ptr = (struct sym *)malloc(sizeof(struct sym));
+        head = (struct sym *)malloc(sizeof(struct sym));
     }
 
-    struct sym *og = s_ptr;
-    struct sym *sp = s_ptr;
+    struct sym *og = head;
+    struct sym *sp = head;
 
     if (sp->name == NULL)
     {
+        // dynamically allocate a linked list
         struct sym *dyn =  (struct sym *)malloc(sizeof(struct sym));
+        // define PI as the tail entry for the linked list
         dyn->name = "PI";
         dyn->value = 3.14159;
         dyn->next = NULL;
+        // PHI is the new head of the linked list
         sp->name = "PHI";
         sp->value = 1.61803;
         sp->next = dyn;
         sp->length = 2;
     }
 
-    while(1)
+    do
     {
         if (sp->name == NULL)
         {
@@ -118,8 +120,8 @@ struct sym * sym_lookup(char *s)
                     {
                         dyn->next = og;
                         dyn->length = og->length;
-                        s_ptr = dyn;
-                        og = s_ptr;
+                        head = dyn;
+                        og = head;
                         sp = og;
                     }
                     else
@@ -147,9 +149,21 @@ struct sym * sym_lookup(char *s)
             sp->length++;
             return dyn;
         }
-    }
-    yyerror("Too many symbols");
-    exit(-1);
-    return NULL; /* unreachable */
+    } while(1);
+    // yyerror("Too many symbols");
+    // exit(-1);
+    // return NULL; /* unreachable */
 }
-
+// Print out the linked list
+void symInv()
+{
+    struct sym *sp = head;
+    printf("num-syms: %d\n", sp->length);
+    int j;
+    int length = sp->length;
+    for ( j = 0; j < length; j++ )
+    {
+        printf("\t%s => %g\n", sp->name, sp->value);
+        sp = sp->next;
+    }
+}

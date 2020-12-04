@@ -1,7 +1,7 @@
 #ifndef SYMTBL_H
 #define SYMTBL_H
 
-#define NSYMS   (500)
+// #define NSYMS   (500)
 
 struct sym 
 {
@@ -12,8 +12,8 @@ struct sym
     struct sym *next;
 } ;
 // sym_tbl[NSYMS];
-struct sym * s_ptr;
+struct sym * head;
 struct sym * sym_lookup(char *);
-void symInventory();
+void symInv();
 
 #endif /* SYMTBL_H */
