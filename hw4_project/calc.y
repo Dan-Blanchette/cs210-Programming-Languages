@@ -1,3 +1,7 @@
+// Dan Blanchette
+// cs210 
+// Dr.Rinker
+// 12-3-2020
 %{
 #include <stdio.h>
 #include <math.h>
@@ -16,9 +20,9 @@ void yyerror(const char *s);
 
 %token <symptr> NAME
 %token <dval> NUMBER
-%token PI PHI
 %left '-' '+'
 %left '*' '/'
+%left '(' ')'
 %nonassoc UMINUS
 
 %type <dval> expression
@@ -63,20 +67,87 @@ expression
 
 struct sym * sym_lookup(char *s)
 {
-    char * p;
-    struct sym *sp;
-
-    for (sp=sym_tbl; sp < &sym_tbl[NSYMS]; sp++)
+    if (s_ptr == NULL)
     {
-        if (sp->name && strcmp(sp->name, s) == 0)
-            return sp;
-        if (sp->name)
-            continue;
-
-        sp->name = strdup(s);
-        return sp; 
+        s_ptr = (struct sym *)malloc(sizeof(struct sym));
     }
-   
+
+    struct sym *og = s_ptr;
+    struct sym *sp = s_ptr;
+
+    if (sp->name == NULL)
+    {
+        struct sym *dyn =  (struct sym *)malloc(sizeof(struct sym));
+        dyn->name = "PI";
+        dyn->value = 3.14159;
+        dyn->next = NULL;
+        sp->name = "PHI";
+        sp->value = 1.61803;
+        sp->next = dyn;
+        sp->length = 2;
+    }
+
+    while(1)
+    {
+        if (sp->name == NULL)
+        {
+            sp->name = strdup(s);
+            sp->next = NULL;
+            return sp;
+        }
+        else if (strcmp(sp->name, s) == 0)
+        {
+            return sp;
+        }
+        else if (sp->next != NULL)
+        {
+            sp = sp->next;
+        }
+        else
+        {
+            struct sym *dyn = (struct sym *)malloc(sizeof(struct sym));
+            dyn->name = strdup(s);
+            sp = og;
+            struct sym *oPtr = NULL;
+
+            while (1)
+            {
+                if (strcmp(sp->name, s) > 0)
+                {
+                    if ( oPtr == NULL)
+                    {
+                        dyn->next = og;
+                        dyn->length = og->length;
+                        s_ptr = dyn;
+                        og = s_ptr;
+                        sp = og;
+                    }
+                    else
+                    {
+                        oPtr->next = dyn;
+                        dyn->next = sp;
+                    }
+                    break;
+                }
+                else
+                {
+                    if (sp->next != NULL)
+                    {
+                        oPtr = sp;
+                        sp = sp->next;
+                    }
+                    else
+                    {
+                        sp->next = dyn;
+                        break;
+                    }
+                }
+            }
+            sp = og;
+            sp->length++;
+            return dyn;
+        }
+    }
     yyerror("Too many symbols");
     exit(-1);
     return NULL; /* unreachable */

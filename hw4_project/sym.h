@@ -3,17 +3,17 @@
 
 #define NSYMS   (500)
 
-struct sym {
+struct sym 
+{
     int length;
     char * name;
     double value;
     struct sym *prev;
     struct sym *next;
-
-} sym_tbl[NSYMS];
-
-struct sym *sym_list;
+} ;
+// sym_tbl[NSYMS];
+struct sym * s_ptr;
 struct sym * sym_lookup(char *);
-void symbol_inventory();
+void symInventory();
 
 #endif /* SYMTBL_H */
