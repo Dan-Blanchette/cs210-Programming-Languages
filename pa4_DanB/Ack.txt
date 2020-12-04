@@ -1,0 +1,9 @@
+Acknowledgement of resources/references I (Dan Blanchette) used in the development of this assignment
+
+- Lex and Yacc -by Doug Brown, John R. Levine, and Tony Mason
+
+- Stackoverflow.com
+- https://stackoverflow.com/questions/40732989/simple-lex-yacc-syntax-error-matching-a-single-question-mark
+
+- Bison Manual
+- https://www.gnu.org/software/bison/manual/bison.html#Examples
